@@ -1,27 +1,27 @@
 {
-  "name": "metro-route",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "format": "prettier --write src/**/*.{js,jsx,ts,tsx}",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.8.1",
-    "axios": "^0.26.1",
-    "formik": "^2.2.9",
-    "next": "12.1.5",
-    "react": "18.0.0",
-    "react-dom": "18.0.0",
-    "react-redux": "^8.0.1",
-    "yup": "^0.32.11"
-  },
-  "devDependencies": {
-    "@types/react": "^18.0.6",
-    "eslint": "8.13.0",
-    "eslint-config-next": "12.1.5"
-  }
+	"name": "metro-route",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"format": "prettier --write src/**/*.{js,jsx,ts,tsx}",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@reduxjs/toolkit": "^1.8.1",
+		"axios": "^0.26.1",
+		"formik": "^2.2.9",
+		"next": "12.1.5",
+		"react": "18.0.0",
+		"react-dom": "18.0.0",
+		"react-redux": "^8.0.1",
+		"yup": "^0.32.11"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.6",
+		"eslint": "8.13.0",
+		"eslint-config-next": "12.1.5"
+	}
 }

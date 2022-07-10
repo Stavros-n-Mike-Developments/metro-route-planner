@@ -7,68 +7,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Lines {
-  id             Int             @id @default(autoincrement())
-  name           String          @db.VarChar(255)
-  lines_stations LinesStations[]
+model Line {
+  id       Int             @id @default(autoincrement())
+  name     String          @db.VarChar(255)
+  stations LinesStations[]
 
   @@map("lines")
 }
 
-model LinesStations {
-  id                                                Int       @id @default(autoincrement())
-  station_id                                        Int
-  line_id                                           Int
-  next_station_id                                   Int?
-  lines                                             Lines     @relation(fields: [line_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkey_lines")
-  stations_lines_stations_next_station_idTostations Stations? @relation("lines_stations_next_station_idTostations", fields: [next_station_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkey_next_station")
-  stations_lines_stations_station_idTostations      Stations  @relation("lines_stations_station_idTostations", fields: [station_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkey_stations")
-
-  @@map("lines_stations")
-}
-
-model RouteSteps {
-  id                                    Int    @id @default(autoincrement())
-  route_id                              Int
-  step_id                               Int
-  next_step_id                          Int?
-  steps_route_steps_next_step_idTosteps Steps? @relation("route_steps_next_step_idTosteps", fields: [next_step_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkey_next_step")
-  routes                                Routes @relation(fields: [route_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkey_route")
-  steps_route_steps_step_idTosteps      Steps  @relation("route_steps_step_idTosteps", fields: [step_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkey_step")
-
-  @@map("route_steps")
-}
-
-model Routes {
-  id                                        Int          @id @default(autoincrement())
-  from_station_id                           Int
-  to_station_id                             Int
-  stations_routes_from_station_idTostations Stations     @relation("routes_from_station_idTostations", fields: [from_station_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkey_station_to")
-  stations_routes_to_station_idTostations   Stations     @relation("routes_to_station_idTostations", fields: [to_station_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkey_station_from")
-  route_steps                               RouteSteps[]
-
-  @@map("routes")
-}
-
-model Stations {
-  id                                                      Int             @id @default(autoincrement())
-  name                                                    String          @db.VarChar(255)
-  lines_stations_lines_stations_next_station_idTostations LinesStations[] @relation("lines_stations_next_station_idTostations")
-  lines_stations_lines_stations_station_idTostations      LinesStations[] @relation("lines_stations_station_idTostations")
-  routes_routes_from_station_idTostations                 Routes[]        @relation("routes_from_station_idTostations")
-  routes_routes_to_station_idTostations                   Routes[]        @relation("routes_to_station_idTostations")
+model Station {
+  id        Int             @id @default(autoincrement())
+  name      String          @db.VarChar(255)
+  lines     LinesStations[] @relation("station_line")
+  nextLines LinesStations[] @relation("nextStation_line") @ignore
 
   @@map("stations")
 }
 
-model Steps {
-  id                                          Int          @id @default(autoincrement())
-  starting_object_type                        String       @db.VarChar(255)
-  starting_object_id                          Int
-  ending_object_type                          String       @db.VarChar(255)
-  ending_object_id                            Int
-  route_steps_route_steps_next_step_idTosteps RouteSteps[] @relation("route_steps_next_step_idTosteps")
-  route_steps_route_steps_step_idTosteps      RouteSteps[] @relation("route_steps_step_idTosteps")
+model LinesStations {
+  id            Int      @id @default(autoincrement())
+  station       Station  @relation(name: "station_line", fields: [stationId], references: [id])
+  stationId     Int
+  line          Line     @relation(fields: [lineId], references: [id])
+  lineId        Int
+  nextStation   Station? @relation(name: "nextStation_line", fields: [nextStationId], references: [id])
+  nextStationId Int?
+
+  @@map("lines_stations")
+}
+
+model Route {
+  id            Int    @id @default(autoincrement())
+  fromStationId Int
+  toStationId   Int
+  steps         Step[]
+
+  @@map("routes")
+}
+
+model Step {
+  id                 Int    @id @default(autoincrement())
+  startingObjectType String @db.VarChar(255)
+  startingObjectId   Int
+  endingObjectType   String @db.VarChar(255)
+  endingObjectId     Int
+  route              Route  @relation(fields: [routeId], references: [id])
+  routeId            Int
+  nextStep           Step?  @relation(name: "nextStep_route", fields: [nextStepId], references: [id])
+  nextStepId         Int?   @unique
+  previousStep       Step?  @relation(name: "nextStep_route")
 
   @@map("steps")
 }
